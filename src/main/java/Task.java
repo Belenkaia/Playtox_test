@@ -20,18 +20,13 @@ public class Task implements Runnable{
         this.sendMoney = sendMoney;
     }
     public void run() {
-        synchronized (Main.accountMap)
+        synchronized (Main.accountMap.get(idFrom))
         {
-            Account account = Main.accountMap.get(idFrom);
-            if(account != null)
-                account.decrementMoney(sendMoney);
-            else
-                log.warn("Cant found account (from)");
-            account = Main.accountMap.get(idTo);
-            if(account != null)
-                account.incrementMoney(sendMoney);
-            else
-                log.warn("Cant fount account (to)");
+            synchronized (Main.accountMap.get(idTo))
+            {
+                Main.accountMap.get(idFrom).decrementMoney(sendMoney);
+                Main.accountMap.get(idTo).incrementMoney(sendMoney);
+            }
         }
         log.info("Task was successfully done");
     }

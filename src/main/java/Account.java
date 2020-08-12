@@ -29,8 +29,4 @@ public class Account {
             log.info("Decremented money (-" + money + ") for Account with ID " + id);
         }
     }
-
-    public String getId() {
-        return id;
-    }
 }
