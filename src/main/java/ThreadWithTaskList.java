@@ -1,3 +1,6 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,30 +11,33 @@ public class ThreadWithTaskList extends Thread {
     private Boolean isReady = true;
     private ArrayList<Task> taskList = new ArrayList<Task>();
 
+    private Logger log = LogManager.getLogger();
+
     @Override
     public void run() {
         while(true)
         {
-            int taskListSize;
-            synchronized (taskList){
-                taskListSize = taskList.size();
-            }
+            synchronized (taskList) {
 
-            if(isInterrupted() && taskListSize == 0)
-            {//TODO: log
-                break;
-            }
-            if(taskListSize > 0)
-            {
-                Task currentTask = getFirstTask();
-                currentTask.run();
+                if (isInterrupted() && taskList.size() == 0) {
+                    log.info("[ ID = " + this.getId() + " ] thread was interrupted and hasn't got tasks");
+                    break;
+                }
+                if (taskList.size() > 0) {
+                    Task currentTask = getFirstTask();
+                    if(currentTask != null)
+                    {
+                        log.info("[ ID = " + this.getId() + " ] Run task");
+                        currentTask.run();
+                    }
+                }
             }
             setNewSleepTime();
 
             try {
                 sleep(sleepTime);
             } catch (InterruptedException e) {
-                e.printStackTrace();//TODO: logger
+                log.warn("Thread was interrupted");
             }
             setReady(true);
         }
@@ -53,6 +59,7 @@ public class ThreadWithTaskList extends Thread {
         synchronized (isReady)
         {
             isReady = value;
+            log.info("[ ID = " + this.getId() + " ] set isReady = " + value);
         }
     }
 
@@ -63,9 +70,11 @@ public class ThreadWithTaskList extends Thread {
         {
             task = taskList.get(0);
             taskList.remove(0);
+            log.info("[ ID = " + this.getId() + " ] get first task and delete it from list");
         }
         return task;
     }
+
     public void setTaskList(ArrayList<Task> taskList) {
         synchronized (this.taskList)
         {
@@ -74,9 +83,11 @@ public class ThreadWithTaskList extends Thread {
     }
     public void addTask(Task newTask)
     {
+        log.info("[ ID = " + this.getId() + " ] add task (" + newTask.getIdFrom() + " -> " + newTask.getIdTo()+ ")");
+        Task task = new Task(newTask);
         synchronized (taskList)
         {
-            taskList.add(newTask);
+            taskList.add(task);
         }
     }
     public void deleteTask(Task task)
@@ -93,5 +104,6 @@ public class ThreadWithTaskList extends Thread {
     {
         Random random = new Random();
         sleepTime = random.nextInt(SLEEP_TIME_MS_MAX + SLEEP_TIME_MS_MIN) + SLEEP_TIME_MS_MIN;
+        log.info("[ ID = " + this.getId() + " ]set sleep time: " + sleepTime);
     }
 }

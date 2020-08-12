@@ -1,40 +1,36 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Account {
     private String id;
-    private int money;
+    private Integer money;
+
+    private Logger log = LogManager.getLogger();
 
     public Account(String id, int money)
     {
         this.id = id;
         this.money = money;
     }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public int getMoney() {
-        return money;
-    }
 
     public void incrementMoney(int money)
     {
-        synchronized (this)
+        synchronized (this.money)
         {
             this.money += money;
+            log.info("Incremented money (+" + money + ") for Account with ID " + id);
         }
     }
     public void decrementMoney(int money)
     {
-        synchronized (this)
+        synchronized (this.money)
         {
             this.money -= money;
+            log.info("Decremented money (-" + money + ") for Account with ID " + id);
         }
+    }
+
+    public String getId() {
+        return id;
     }
 }
