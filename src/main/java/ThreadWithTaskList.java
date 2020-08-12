@@ -38,6 +38,7 @@ public class ThreadWithTaskList extends Thread {
                 sleep(sleepTime);
             } catch (InterruptedException e) {
                 log.warn("Thread was interrupted");
+                interrupt();
             }
             setReady(true);
         }
@@ -70,7 +71,7 @@ public class ThreadWithTaskList extends Thread {
         {
             task = taskList.get(0);
             taskList.remove(0);
-            log.info("[ ID = " + this.getId() + " ] get first task and delete it from list");
+            log.info("[ ID = " + this.getId() + " ] get first task and delete it from list (tasks in list: " + taskList.size()+")");
         }
         return task;
     }
@@ -83,7 +84,7 @@ public class ThreadWithTaskList extends Thread {
     }
     public void addTask(Task newTask)
     {
-        log.info("[ ID = " + this.getId() + " ] add task (" + newTask.getIdFrom() + " -> " + newTask.getIdTo()+ ")");
+        log.info("[ ID = " + this.getId() + " ] add task to taskList in thread (" + newTask.getIdFrom() + " -> " + newTask.getIdTo()+ ")");
         Task task = new Task(newTask);
         synchronized (taskList)
         {

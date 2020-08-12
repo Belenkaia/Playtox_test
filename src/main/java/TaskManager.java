@@ -62,7 +62,7 @@ public class TaskManager extends Thread {
                     thread.addTask(allTasksList.get(0));
                     thread.setReady(false);
                     allTasksList.remove(0);
-                    log.info("Remove assigned task from the list");
+                    log.info("Remove assigned task from the list ( tasks: " + allTasksList.size() + ")");
                 }
             }
             try {
@@ -80,7 +80,7 @@ public class TaskManager extends Thread {
         synchronized (Main.threadList) {
             for (ThreadWithTaskList thread : Main.threadList) {
                 thread.interrupt();
-                log.info("Interrupt thread +" + thread.getId());
+                log.info("Interrupt thread " + thread.getId());
             }
 
         }
