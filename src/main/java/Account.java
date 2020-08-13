@@ -24,6 +24,7 @@ public class Account {
         {
             this.money += money;
             log.info("Incremented money (+" + money + ") for Account with ID " + id);
+            log.info("Account " + id + ", money = " + this.money);
         }
     }
 
@@ -45,6 +46,7 @@ public class Account {
             {
                 log.warn("Not enough money on account (" + id + ")");
             }
+            log.info("Account " + id + ", money = " + this.money);
         }
         return canDecrement;
     }
