@@ -15,21 +15,27 @@ public class Main {
 
     public static HashMap <String, Account> accountMap = new HashMap<String, Account>();
     public static ArrayList<ThreadWithTaskList> threadList = new ArrayList<ThreadWithTaskList>();
-    public static void main(String[] args) {
-        createAccountMap();
 
+//--------------------------------------------------------------------------------------------------------------------------------------------
+// application start point: method creates all accounts, tasks, starts taskManager and threads
+//--------------------------------------------------------------------------------------------------------------------------------------------
+    public static void main(String[] args) {
+        createAccountMap(); // create all accounts
         TaskManager taskManager = new TaskManager();
-        while(!taskManager.createTasks())
+        if(!taskManager.createTasks()) // trying to create all tasks
         {
             log.info("Cant create tasks, trying again");
+            if(!taskManager.createTasks())
+            {
+                log.error("Cant create task list");
+                return;
+            }
         }
-
 
         for(int i = 0; i < THREADS_COUNT; i ++)
         {
             ThreadWithTaskList tempThread = new ThreadWithTaskList();
-
-            synchronized (threadList)
+            synchronized (threadList) //take the mutex (threadList)
             {
                 threadList.add(tempThread);
                 log.info("Thread with ID " + tempThread.getId() +  " was put into the list.");
@@ -37,10 +43,13 @@ public class Main {
             tempThread.start();
             log.info("New thread with ID " + tempThread.getId() +  " was started.");
         }
-        taskManager.start();
+        taskManager.start(); //start taskManager thread
         log.info("Task manager thread was started. (ID = " + taskManager.getId() + ").");
-
     }
+
+//--------------------------------------------------------------------------------------------------------------------------------------------
+// method creates a list with default accounts
+//--------------------------------------------------------------------------------------------------------------------------------------------
     private static void createAccountMap()
     {
         Random random = new Random();
