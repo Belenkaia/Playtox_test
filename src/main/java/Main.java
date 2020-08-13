@@ -7,9 +7,9 @@ import java.util.Random;
 
 public class Main {
 
-    private static int ACCOUNT_COUNT = 4;
+    public static int ACCOUNT_COUNT = 4;
     private static int MAX_ID = 9000;
-    private static int THREADS_COUNT = 3;
+    public static int THREADS_COUNT = 3;
     public static int DEFAULT_MONEY = 10000;
     private static Logger log = LogManager.getLogger();
 
@@ -50,12 +50,16 @@ public class Main {
 //--------------------------------------------------------------------------------------------------------------------------------------------
 // method creates a list with default accounts
 //--------------------------------------------------------------------------------------------------------------------------------------------
-    private static void createAccountMap()
+    public static void createAccountMap()
     {
         Random random = new Random();
         for (int i = 0; i < ACCOUNT_COUNT; i ++)
         {
             Integer randomID = random.nextInt(MAX_ID) + 1;
+            while (accountMap.containsKey(randomID.toString())) // all ID have to be different
+            {
+                randomID = random.nextInt(MAX_ID) + 1;
+            }
             String tempID = randomID.toString();
             Account tempAccount = new Account(tempID, DEFAULT_MONEY);
             log.info("Account with ID " + tempID + " was created.");

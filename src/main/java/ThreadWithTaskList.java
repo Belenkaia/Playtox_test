@@ -78,12 +78,15 @@ public class ThreadWithTaskList extends Thread {
 //--------------------------------------------------------------------------------------------------------------------------------------------
     public Task getFirstTask()
     {
-        Task task;
+        Task task = null;
         synchronized (taskList)
         {
-            task = taskList.get(0);
-            taskList.remove(0);
-            log.info("[ ID = " + this.getId() + " ] get first task and delete it from list (tasks in list: " + taskList.size()+")");
+            if(taskList.size() > 0)
+            {
+                task = taskList.get(0);
+                taskList.remove(0);
+                log.info("[ ID = " + this.getId() + " ] get first task and delete it from list (tasks in list: " + taskList.size()+")");
+            }
         }
         return task;
     }
